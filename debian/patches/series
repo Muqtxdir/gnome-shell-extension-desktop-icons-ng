@@ -1,3 +1,4 @@
 translations_not_source.patch
 Fix-focus-loss-on-fullscreen.patch
 extension-Ignore-workarea-changes-if-its-just-switching-.patch
+personalize.patch

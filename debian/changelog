@@ -1,3 +1,9 @@
+gnome-shell-extension-desktop-icons-ng (20-0ubuntu4) impish; urgency=medium
+
+  * make modifications to show personlaize menuitem
+
+ -- Muqtadir <muqtadir5555@gmail.com>  Mon, 18 Oct 2021 00:06:42 +0530
+
 gnome-shell-extension-desktop-icons-ng (20-0ubuntu3) impish; urgency=medium
 
   [ Daniel van Vugt ]

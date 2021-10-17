@@ -1,0 +1,28 @@
+Index: gnome-shell-extension-desktop-icons-ng-20/desktopManager.js
+===================================================================
+--- gnome-shell-extension-desktop-icons-ng-20.orig/desktopManager.js
++++ gnome-shell-extension-desktop-icons-ng-20/desktopManager.js
+@@ -638,6 +638,13 @@ var DesktopManager = class {
+         this._menu.add(this._changeBackgroundMenuItem);
+ 
+         this._menu.add(new Gtk.SeparatorMenuItem());
++        
++        this._personalizeMenuItem = new Gtk.MenuItem({label: _("Personalize")});
++        this._personalizeMenuItem.connect("activate", () => {
++            let desktopFile = Gio.DesktopAppInfo.new('gnome-ubuntugeneral-panel.desktop');
++            desktopFile.launch([], null);
++        });
++        this._menu.add(this._personalizeMenuItem);
+ 
+         this._displaySettingsMenuItem = new Gtk.MenuItem({label: _("Display Settings")});
+         this._displaySettingsMenuItem.connect("activate", () => {
+@@ -646,9 +653,6 @@ var DesktopManager = class {
+         });
+         this._menu.add(this._displaySettingsMenuItem);
+ 
+-        this._settingsMenuItem = new Gtk.MenuItem({label: _("Desktop Icons settings")});
+-        this._settingsMenuItem.connect("activate", () => Prefs.showPreferences());
+-        this._menu.add(this._settingsMenuItem);
+         this._menu.show_all();
+     }
+ 
