@@ -1,0 +1,69 @@
+From 56416b6bd0ccb6887c8b0536711f3f221c7b7b94 Mon Sep 17 00:00:00 2001
+From: Sergio Costas <raster@rastersoft.com>
+Date: Sat, 25 Sep 2021 18:32:53 +0200
+Subject: [PATCH] Fix focus loss on fullscreen
+
+In the last Gnome Shell, when a window switches to fullscreen,
+it loses the focus because the desktop is relaunched.
+
+This patch fixes this.
+
+Origin: Upstream commit 56416b6bd0ccb6887c8b0536711f3f221c7b7b94
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1946159
+Forwarded: not-needed
+Last-Update: 2021-10-06
+
+Index: desktop-icons-ng/emulateX11WindowType.js
+===================================================================
+--- desktop-icons-ng.orig/emulateX11WindowType.js
++++ desktop-icons-ng/emulateX11WindowType.js
+@@ -37,10 +37,11 @@ class ManageWindow {
+        without decorations.
+     */
+ 
+-    constructor(window, wayland_client) {
++    constructor(window, wayland_client, changedStatusCB) {
+         this._wayland_client = wayland_client;
+         this._window = window;
+         this._signalIDs = [];
++        this._changedStatusCB = changedStatusCB;
+         this._signalIDs.push(window.connect_after('raised', () => {
+             if (this._keepAtBottom && !this._keepAtTop) {
+                 this._window.lower();
+@@ -96,7 +97,7 @@ class ManageWindow {
+                     this._x = parseInt(coords[0]);
+                     this._y = parseInt(coords[1]);
+                 } catch(e) {
+-                    print(`Exception ${e.message}`);
++                    global.log(`Exception ${e.message}.\n${e.stack}`);
+                 }
+                 try {
+                     let extra_chars = title.substring(pos+2).trim().toUpperCase();
+@@ -122,7 +123,7 @@ class ManageWindow {
+                         }
+                     }
+                 } catch(e) {
+-                    print(`Exception ${e.message}`);
++                    global.log(`Exception ${e.message}.\n${e.stack}`);
+                 }
+             }
+             if (this._wayland_client) {
+@@ -145,6 +146,7 @@ class ManageWindow {
+             if (this._fixed && (this._x !== null) && (this._y !== null)) {
+                 this._window.move_frame(false, this._x, this._y);
+             }
++            this._changedStatusCB(this);
+         }
+     }
+ 
+@@ -281,7 +283,9 @@ var EmulateX11WindowType = class {
+         if (window.get_meta_window) { // it is a MetaWindowActor
+             window = window.get_meta_window();
+         }
+-        window.customJS_ding = new ManageWindow(window, this._wayland_client);
++        window.customJS_ding = new ManageWindow(window, this._wayland_client, () => {
++            this._refreshWindows(true);
++        });
+         this._windowList.push(window);
+         window.customJS_ding.unmanagedID = window.connect("unmanaged", (window) => {
+             this._clearWindow(window);

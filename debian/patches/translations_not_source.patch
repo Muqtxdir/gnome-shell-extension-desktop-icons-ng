@@ -1,0 +1,17 @@
+# Description: don't set the translations domain to the srcdir
+# Upstream: https://gitlab.com/rastersoft/desktop-icons-ng/-/issues/113
+#
+Index: gnome-shell-extension-desktop-icons-ng-0.15.0/ding.js
+===================================================================
+--- gnome-shell-extension-desktop-icons-ng-0.15.0.orig/ding.js
++++ gnome-shell-extension-desktop-icons-ng-0.15.0/ding.js
+@@ -79,9 +79,6 @@ if (desktops.length == 0) {
+ imports.searchPath.unshift(codePath);
+ 
+ const Prefs = imports.preferences;
+-const Gettext = imports.gettext;
+-
+-Gettext.bindtextdomain("ding", GLib.build_filenamev([codePath, "locale"]));
+ 
+ const DesktopManager = imports.desktopManager;
+ 

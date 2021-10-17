@@ -1,0 +1,38 @@
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Date: Thu, 7 Oct 2021 17:59:53 +0800
+Subject: extension: Ignore workarea changes if it's just switching to fullscreen
+
+If the monitor is covered by a fullscreen window then we don't need to
+react to that workarea change.
+
+Not reloading has the added benefit of not briefly stealing focus from
+the window that's going fullscreen. Some fullscreen-only apps like games
+would take that to mean that they should minimize themselves. So they
+would never be able to stay fullscreen without instantly minimizing again.
+
+Now that shouldn't happen, and there's much less flicker.
+
+Origin: https://gitlab.com/rastersoft/desktop-icons-ng/-/commit/c167dd1f
+Bug-Ubuntu: https://launchpad.net/bugs/1946307
+---
+ extension.js | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/extension.js b/extension.js
+index 6e3824f..a8d0db4 100644
+--- a/extension.js
++++ b/extension.js
+@@ -153,7 +153,12 @@ function reloadIfSizesChanged() {
+         let ws = global.workspace_manager.get_workspace_by_index(0);
+         let area = ws.get_work_area_for_monitor(monitorIndex);
+         let area2 = data.desktopCoordinates[monitorIndex];
+-        let scale = Main.layoutManager.monitors[monitorIndex].geometry_scale;
++        let monitor = Main.layoutManager.monitors[monitorIndex];
++        let scale = monitor.geometry_scale;
++
++        if (monitor.inFullscreen)
++            continue;
++
+         if ((area.x != area2.x) ||
+             (area.y != area2.y) ||
+             (area.width != area2.width) ||
