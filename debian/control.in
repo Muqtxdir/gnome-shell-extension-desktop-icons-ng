@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
 Uploaders: @GNOME_TEAM@
-Build-Depends: debhelper-compat (= 13),
+Build-Depends: debhelper-compat (= 12),
                dh-sequence-gnome,
                libglib2.0-bin,
                meson
@@ -17,9 +17,9 @@ Rules-Requires-Root: no
 Package: gnome-shell-extension-desktop-icons-ng
 Architecture: all
 Depends: ${misc:Depends},
-         gnome-shell (>= 3.38),
+         gnome-shell (>= 3.36),
          gjs,
-         nautilus (>= 3.38),
+         nautilus (>= 3.36),
          xdg-desktop-portal
 Description: desktop icon support for GNOME Shell
  This package provides a GNOME Shell extension for showing the contents
